@@ -1,6 +1,6 @@
-ARG GOLANG_VERSION="1.24.2"
+ARG GOLANG_VERSION="1.25"
 
-FROM golang:${GOLANG_VERSION}-bookworm AS build-stage
+FROM golang:${GOLANG_VERSION}-trixie AS build-stage
 
 WORKDIR /app
 
@@ -44,16 +44,20 @@ RUN set -ue \
 
 RUN ls -alh /dist
 
-FROM debian:bookworm-slim AS final-stage
+FROM debian:trixie-slim AS final-stage
 
 RUN set -e \
+    && useradd -md /app app \
     && apt update \
     && apt install -y curl nginx-light \
-    && chown -R www-data:www-data /var/lib/nginx/ /run \
+    && chown -R app:app /var/lib/nginx/ /run /var/log/nginx/ \
+    && sed -ri '/^user.+;$/d' /etc/nginx/nginx.conf \
     && sed -i '/try_files $uri $uri\/ =404/a autoindex on;' /etc/nginx/sites-enabled/default \
     && rm /var/www/html/* \
     && apt clean \
-    && useradd -md /app app
+    && mkdir -p /app/.config/containers/ \
+    && echo '{"default":[{"type":"insecureAcceptAnything"}]}' > /app/.config/containers/policy.json \
+    && chown -R app:app /app/
 
 WORKDIR /app
 COPY --from=build-stage \
@@ -64,6 +68,6 @@ RUN set -e \
     && ln -s /usr/local/bin/* /var/www/html/
 
 
-USER www-data
+USER app
 
 CMD ["nginx", "-g", "daemon off;"]
