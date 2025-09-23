@@ -50,14 +50,13 @@ RUN set -e \
     && useradd -md /app app \
     && apt update \
     && apt install -y curl nginx-light \
-    && chown -R app:app /var/lib/nginx/ /run /var/log/nginx/ \
     && sed -ri '/^user.+;$/d' /etc/nginx/nginx.conf \
     && sed -i '/try_files $uri $uri\/ =404/a autoindex on;' /etc/nginx/sites-enabled/default \
     && rm /var/www/html/* \
     && apt clean \
     && mkdir -p /app/.config/containers/ \
     && echo '{"default":[{"type":"insecureAcceptAnything"}]}' > /app/.config/containers/policy.json \
-    && chown -R app:app /app/
+    && chown -R app:app /app/ /var/lib/nginx/ /run /var/log/nginx/
 
 WORKDIR /app
 COPY --from=build-stage \
