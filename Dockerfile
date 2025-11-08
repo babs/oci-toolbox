@@ -14,6 +14,7 @@ RUN go install github.com/babs/ecr-repo-creator@latest
 RUN go install github.com/regclient/regclient/cmd/regctl@latest
 RUN go install github.com/regclient/regclient/cmd/regsync@latest
 RUN go install github.com/regclient/regclient/cmd/regbot@latest
+RUN go install github.com/google/go-containerregistry/cmd/crane@main
 
 COPY --from=ghcr.io/jqlang/jq /jq /dist/
 COPY --from=mikefarah/yq /usr/bin/yq /dist/
@@ -39,6 +40,7 @@ RUN set -ue \
         /go/bin/regctl \
         /go/bin/regsync \
         /go/bin/regbot \
+        /go/bin/crane \
         /dist \
     && chmod +rx /dist/*
 

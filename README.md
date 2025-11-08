@@ -14,3 +14,5 @@ It includes:
 - [helm](https://github.com/helm)
 - [manifest-tool](https://github.com/estesp/manifest-tool)
 - [umoci](https://github.com/opencontainers/umoci)
+- [regclient](https://regclient.org/)
+- [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md)
