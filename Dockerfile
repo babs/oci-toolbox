@@ -1,4 +1,4 @@
-ARG GOLANG_VERSION="1.25"
+ARG GOLANG_VERSION="1.26"
 
 FROM golang:${GOLANG_VERSION}-trixie AS build-stage
 
@@ -11,6 +11,7 @@ ENV CGO_ENABLED=0
 RUN go install github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login@latest
 RUN go install github.com/a8m/envsubst/cmd/envsubst@v1.4.3
 RUN go install github.com/babs/ecr-repo-creator@latest
+RUN go install github.com/babs/ecr-prime@v1.0.0
 RUN go install github.com/regclient/regclient/cmd/regctl@latest
 RUN go install github.com/regclient/regclient/cmd/regsync@latest
 RUN go install github.com/regclient/regclient/cmd/regbot@latest
@@ -36,6 +37,7 @@ RUN set -ue \
 RUN set -ue \
     && cp /go/bin/envsubst \
         /go/bin/ecr-repo-creator \
+        /go/bin/ecr-prime \
         /go/bin/docker-credential-ecr-login \
         /go/bin/regctl \
         /go/bin/regsync \
